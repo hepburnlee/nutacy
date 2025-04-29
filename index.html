@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>LIFF Demo</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.1.1/crypto-js.min.js"></script>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    img {
+      border-radius: 50%;
+      width: 140px;
+      height: 140px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+
+    .user-info {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .user-info p {
+      margin: 6px 0;
+      font-size: 16px;
+    }
+
+    .multi-select {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 25px;
+    }
+
+    .multi-select label {
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .submit-btn {
+      background-color: #06C755;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background-color: #04a94d;
+    }
+  </style>
+</head>
+<body>
+  <img id="userImage" src="" alt="User Image">
+  <div class="user-info">
+    <p id="displayName">載入中...</p>
+  </div>
+
+  <div class="multi-select">
+    <label><input type="checkbox" name="option" value="A"> A</label>
+    <label><input type="checkbox" name="option" value="B"> B</label>
+    <label><input type="checkbox" name="option" value="C"> C</label>
+    <label><input type="checkbox" name="option" value="D"> D</label>
+  </div>
+
+  <button class="submit-btn" onclick="handleSubmit()">送出資料</button>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "2007327104-LJnzO0BO" });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      } else {
+        const profile = await liff.getProfile();
+        document.getElementById('userImage').src = profile.pictureUrl;
+        document.getElementById('displayName').textContent = profile.displayName;
+        // userId 已移除畫面顯示
+      }
+    }
+
+    function handleSubmit() {
+      const selectedOptions = Array.from(document.querySelectorAll('input[name="option"]:checked'))
+        .map(cb => cb.value);
+
+      Promise.all([liff.getProfile(), liff.getContext()])
+        .then(([profile, context]) => {
+          const rawUserId = context.userId || '';
+          const userHashId = CryptoJS.SHA256(rawUserId).toString();
+
+          const userData = {
+            userHashId: userHashId,
+            displayName: profile.displayName,
+            pictureUrl: profile.pictureUrl,
+            selectedOptions: selectedOptions
+          };
+
+          fetch('https://yourserver.com/webhook', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+          })
+          .then(res => res.ok ? res.json() : Promise.reject(res))
+          .then(data => {
+            alert("送出成功！");
+          })
+          .catch(err => {
+            alert("送出失敗，請稍後再試");
+            console.error(err);
+          });
+        });
+    }
+
+    main();
+  </script>
+</body>
+</html>
