@@ -42,7 +42,7 @@
         // ===================================================================================
         // ============================== 設定 & 全域變數 ===============================
         // ===================================================================================
-        const APPS_SCRIPT_URL = '貼上您從 Google Apps Script 部署後取得的網址';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmQqPCldfXeavG1utqLFxdIR7YFT8_zzk3m1UAuUvSRlHNHMqZMSSz1m5AgbjLXQqU/exec';
         let memberData = [], attendanceRecords = {}, leaveRecords = {};
         const voicePartNames = { soprano: '女高音', alto: '女低音', tenor: '男高音', bass: '男低音' };
         let voicePartChart = null, trendChart = null;
@@ -51,7 +51,7 @@
         // ================================= 程式進入點 ==================================
         // ===================================================================================
         document.addEventListener('DOMContentLoaded', function() {
-            if (APPS_SCRIPT_URL.includes('https://script.google.com/macros/s/AKfycbxmQqPCldfXeavG1utqLFxdIR7YFT8_zzk3m1UAuUvSRlHNHMqZMSSz1m5AgbjLXQqU/exec')) {
+            if (APPS_SCRIPT_URL.includes('貼上您')) {
                 alert('錯誤：請先在 index.html 檔案中設定您的 Google Apps Script URL！');
                 document.getElementById('loading').innerHTML = '<p class="text-rose-600 font-bold">設定錯誤：請在程式碼中填入您的 Apps Script URL。</p>';
                 return;
