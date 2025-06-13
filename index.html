@@ -29,23 +29,41 @@
     </div>
 
     <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <!-- 頁面結構 (HTML) 保持不變 -->
+        <!-- 頁面結構 (HTML) -->
         <header class="mb-8"><h1 class="text-3xl font-bold text-center text-denim-600">合唱團練唱出席統計系統</h1><p class="text-center text-misty-500 mt-2">追蹤並分析練唱出席情況</p></header>
         <div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200"><div class="flex flex-col md:flex-row justify-between items-center mb-6"><h2 class="text-xl font-semibold text-denim-600 mb-4 md:mb-0">選擇練唱日期</h2><div class="flex flex-col sm:flex-row gap-4"><select id="dateSelect" class="px-4 py-2 border border-pale-300 rounded-md focus:outline-none focus:ring-2 focus:ring-denim-400 bg-white text-misty-700"><option value="" disabled selected>載入資料中...</option></select></div></div></div>
         <div class="mb-6 border-b border-pale-200"><nav class="flex space-x-8"><button class="tab tab-active py-4 px-1 font-medium text-lg" data-tab="dashboard">儀表板</button><button class="tab py-4 px-1 font-medium text-lg" data-tab="attendance">出席詳情</button><button class="tab py-4 px-1 font-medium text-lg" data-tab="leave">請假記錄</button></nav></div>
+        
+        <!-- 儀表板頁面 -->
         <div id="dashboard" class="tab-content"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"><div class="bg-white rounded-lg shadow-md p-6 card border-l-4 border-denim-400"><h3 class="text-misty-500 text-sm font-medium mb-2">練唱日期</h3><p id="practiceDate" class="text-2xl font-bold text-misty-700">--</p></div><div class="bg-white rounded-lg shadow-md p-6 card border-l-4 border-denim-500"><h3 class="text-misty-500 text-sm font-medium mb-2">出席/應出席人數</h3><p id="attendanceCount" class="text-2xl font-bold text-misty-700">--/--</p></div><div class="bg-white rounded-lg shadow-md p-6 card border-l-4 border-rose-400"><h3 class="text-misty-500 text-sm font-medium mb-2">出席率</h3><p id="attendanceRate" class="text-2xl font-bold text-misty-700">--%</p></div><div class="bg-white rounded-lg shadow-md p-6 card border-l-4 border-silver-400"><h3 class="text-misty-500 text-sm font-medium mb-2">請假人數</h3><p id="leaveCount" class="text-2xl font-bold text-misty-700">--</p></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8"><div class="bg-white rounded-lg shadow-md p-6 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">各聲部出席狀況</h3><div class="h-64"><canvas id="voicePartChart"></canvas></div></div><div class="bg-white rounded-lg shadow-md p-6 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">出席率趨勢</h3><div class="h-64"><canvas id="trendChart"></canvas></div></div></div></div>
-        <div id="attendance" class="tab-content hidden"><div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">詳細出席數據</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-pale-200"><thead class="bg-pale-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">聲部</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">總人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">出席人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">請假人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">缺席人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">出席率</th></tr></thead><tbody id="detailTableBody" class="bg-white divide-y divide-pale-100"></tbody></table></div></div><div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">出席人員名單</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="attendanceList"><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">女高音</h4><ul id="sopranoList" class="text-sm space-y-1"></ul></div><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">女低音</h4><ul id="altoList" class="text-sm space-y-1"></ul></div><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">男高音</h4><ul id="tenorList" class="text-sm space-y-1"></ul></div><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">男低音</h4><ul id="bassList" class="text-sm space-y-1"></ul></div></div></div></div>
-        <div id="leave" class="tab-content hidden"><div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">請假人員名單</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-pale-200"><thead class="bg-pale-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">姓名</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">聲部</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">請假事由</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">登記時間</th></tr></thead><tbody id="leaveTableBody" class="bg-white divide-y divide-pale-100"></tbody></table></div></div></div>
+        
+        <!-- 出席詳情頁面 -->
+        <div id="attendance" class="tab-content hidden"><div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">詳細出席數據</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-pale-200"><thead class="bg-pale-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">聲部</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">總人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">出席人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">請假人數</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">缺席人数</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">出席率</th></tr></thead><tbody id="detailTableBody" class="bg-white divide-y divide-pale-100"></tbody></table></div></div><div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200"><h3 class="text-xl font-semibold text-denim-600 mb-4">出席人員名單</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="attendanceList"><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">女高音</h4><ul id="sopranoList" class="text-sm space-y-1"></ul></div><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">女低音</h4><ul id="altoList" class="text-sm space-y-1"></ul></div><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">男高音</h4><ul id="tenorList" class="text-sm space-y-1"></ul></div><div class="p-4 border border-pale-200 rounded-lg bg-pale-50"><h4 class="font-medium text-misty-700 mb-2">男低音</h4><ul id="bassList" class="text-sm space-y-1"></ul></div></div></div></div>
+        
+        <!-- 請假記錄頁面 -->
+        <div id="leave" class="tab-content hidden">
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200">
+                <h3 class="text-xl font-semibold text-denim-600 mb-4">請假人員名單 (for <span id="leaveDate" class="text-rose-500"></span>)</h3>
+                <div class="overflow-x-auto"><table class="min-w-full divide-y divide-pale-200"><thead class="bg-pale-50"><tr><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">姓名</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">聲部</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">請假事由</th><th class="px-6 py-3 text-left text-xs font-medium text-misty-600 uppercase tracking-wider">登記時間</th></tr></thead><tbody id="leaveTableBody" class="bg-white divide-y divide-pale-100"></tbody></table></div>
+            </div>
+            <!-- 新增的請假原因分析區塊 -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8 border border-pale-200">
+                <h3 class="text-xl font-semibold text-denim-600 mb-4">請假原因分析 (所有日期)</h3>
+                <div class="h-64">
+                    <canvas id="leaveReasonChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         // ===================================================================================
         // ============================== 設定 & 全域變數 ===============================
         // ===================================================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmQqPCldfXeavG1utqLFxdIR7YFT8_zzk3m1UAuUvSRlHNHMqZMSSz1m5AgbjLXQqU/exec';
-        let memberData = [], attendanceRecords = {}, leaveRecords = {};
+        const APPS_SCRIPT_URL = 'AKfycbxmQqPCldfXeavG1utqLFxdIR7YFT8_zzk3m1UAuUvSRlHNHMqZMSSz1m5AgbjLXQqU';
+        let memberData = [], attendanceRecords = {}, leaveRecords = {}, leaveReasonStats = {};
         const voicePartNames = { soprano: '女高音', alto: '女低音', tenor: '男高音', bass: '男低音' };
-        let voicePartChart = null, trendChart = null;
+        let voicePartChart = null, trendChart = null, leaveReasonChart = null;
 
         // ===================================================================================
         // ================================= 程式進入點 ==================================
@@ -61,31 +79,21 @@
         });
 
         // ===================================================================================
-        // ================================= 資料載入 (新方法) =============================
+        // ================================= 資料載入 (JSONP) =============================
         // ===================================================================================
 
-        /**
-         * 使用 JSONP 技術從 Apps Script 載入數據，以繞過 CORS 問題
-         */
         function loadDataWithJSONP() {
             const script = document.createElement('script');
-            // 'handleData' 是我們定義在 window 上的回調函數名稱
             script.src = `${APPS_SCRIPT_URL}?callback=handleData`;
-            
             script.onerror = () => {
                 console.error('JSONP 腳本載入失敗。');
                 hideLoading();
                 document.getElementById('loading').classList.remove('hidden');
                 document.getElementById('loading').innerHTML = `<p class="text-rose-600 font-bold text-center">無法從 Google Sheet 載入資料。<br>請檢查 Apps Script URL 是否正確，或按 F12 查看主控台錯誤訊息。</p>`;
             };
-
             document.head.appendChild(script);
         }
 
-        /**
-         * 這是 JSONP 的回調函數，當 Apps Script 的數據成功返回時會被執行
-         * @param {object} data - 從 Apps Script 返回的數據物件
-         */
         window.handleData = function(data) {
             if (data.error) {
                 console.error('Apps Script 返回錯誤:', data.error);
@@ -98,39 +106,82 @@
         };
 
         // ===================================================================================
-        // =============================== 以下為既有邏輯，無需修改 ============================
+        // =============================== 以下為核心邏輯 ============================
         // ===================================================================================
 
-        function processFetchedData(fetchedData) { memberData = fetchedData.members; attendanceRecords = fetchedData.attendance; leaveRecords = fetchedData.leave; }
+        function processFetchedData(data) {
+            memberData = data.members;
+            attendanceRecords = data.attendance;
+            leaveRecords = data.leave;
+            leaveReasonStats = data.leaveReasonStats; // 儲存請假原因統計
+        }
+
         function initializePage() {
             const dateSelect = document.getElementById('dateSelect');
             dateSelect.innerHTML = '<option value="" disabled selected>請選擇日期</option>';
             const availableDates = Object.keys(attendanceRecords).sort((a, b) => new Date(b) - new Date(a));
-            if(availableDates.length === 0) { dateSelect.innerHTML = '<option value="" disabled selected>無有效的出席紀錄</option>'; return; }
-            availableDates.forEach(date => { const option = document.createElement('option'); option.value = date; option.textContent = formatDate(date); dateSelect.appendChild(option); });
+            if(availableDates.length === 0) {
+                dateSelect.innerHTML = '<option value="" disabled selected>無有效的出席紀錄</option>';
+                return;
+            }
+            availableDates.forEach(date => {
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = formatDate(date);
+                dateSelect.appendChild(option);
+            });
             dateSelect.addEventListener('change', function() { updateDashboard(this.value); });
-            document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', function() { document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active')); this.classList.add('tab-active'); document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden')); document.getElementById(this.getAttribute('data-tab')).classList.remove('hidden'); }); });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('tab-active'));
+                    this.classList.add('tab-active');
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+                    document.getElementById(this.getAttribute('data-tab')).classList.remove('hidden');
+                });
+            });
             initializeCharts();
-            if (availableDates.length > 0) { dateSelect.value = availableDates[0]; updateDashboard(availableDates[0]); }
+            if (availableDates.length > 0) {
+                dateSelect.value = availableDates[0];
+                updateDashboard(availableDates[0]);
+            }
         }
+
         function initializeCharts() {
+            // 聲部出席圖表
             const voicePartCtx = document.getElementById('voicePartChart').getContext('2d');
-            voicePartChart = new Chart(voicePartCtx, { type: 'bar', data: { labels: Object.values(voicePartNames), datasets: [{ label: '出席', backgroundColor: 'rgba(119, 151, 178, 0.7)', data: [0, 0, 0, 0] }, { label: '請假', backgroundColor: 'rgba(207, 205, 196, 0.7)', data: [0, 0, 0, 0] }, { label: '缺席', backgroundColor: 'rgba(219, 136, 139, 0.7)', data: [0, 0, 0, 0] }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(119, 151, 178, 0.1)' } } } } });
+            voicePartChart = new Chart(voicePartCtx, { type: 'bar', data: { labels: Object.values(voicePartNames), datasets: [{ label: '出席', backgroundColor: 'rgba(119, 151, 178, 0.7)', data: [] }, { label: '請假', backgroundColor: 'rgba(207, 205, 196, 0.7)', data: [] }, { label: '缺席', backgroundColor: 'rgba(219, 136, 139, 0.7)', data: [] }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(119, 151, 178, 0.1)' } } } } });
+            
+            // 出席率趨勢圖表
             const trendCtx = document.getElementById('trendChart').getContext('2d');
             trendChart = new Chart(trendCtx, { type: 'line', data: { labels: [], datasets: [{ label: '整體出席率', borderColor: 'rgba(119, 151, 178, 1)', backgroundColor: 'rgba(119, 151, 178, 0.2)', data: [], fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100, ticks: { callback: value => value + '%' } } } } });
             updateTrendChart();
+            
+            // 請假原因分析圖表 (新增)
+            const leaveReasonCtx = document.getElementById('leaveReasonChart').getContext('2d');
+            leaveReasonChart = new Chart(leaveReasonCtx, {
+                type: 'doughnut',
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#7797b2', '#db888b', '#a5aca5', '#cfcdc4', '#5d6e7d', '#b8b5aa'] }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+            });
+            updateLeaveReasonChart();
         }
+
         function updateDashboard(date) {
             const data = processAttendanceData(date);
             if (!data) return;
             document.getElementById('practiceDate').textContent = formatDate(date);
+            document.getElementById('leaveDate').textContent = formatDate(date); // 更新請假頁的日期
             let totalPresent = 0, totalMembers = 0, totalLeave = 0;
             Object.values(data).forEach(part => { totalPresent += part.present; totalMembers += part.total; totalLeave += part.leave; });
             document.getElementById('attendanceCount').textContent = `${totalPresent}/${totalMembers}`;
             document.getElementById('attendanceRate').textContent = totalMembers > 0 ? `${(totalPresent / totalMembers * 100).toFixed(1)}%` : '0%';
             document.getElementById('leaveCount').textContent = totalLeave;
-            updateVoicePartChart(data); updateDetailTable(data); updateAttendanceList(date); updateLeaveList(date);
+            updateVoicePartChart(data);
+            updateDetailTable(data);
+            updateAttendanceList(date);
+            updateLeaveList(date);
         }
+
         function processAttendanceData(date) {
             const activeMembers = memberData.filter(m => m.狀態 === "在練");
             const activeMembersByPart = { soprano: [], alto: [], tenor: [], bass: [] };
@@ -148,11 +199,67 @@
             });
             return result;
         }
-        function updateVoicePartChart(data) { const presentData = [], leaveData = [], absentData = []; Object.keys(voicePartNames).forEach(part => { presentData.push(data[part].present); leaveData.push(data[part].leave); absentData.push(data[part].absent); }); voicePartChart.data.datasets[0].data = presentData; voicePartChart.data.datasets[1].data = leaveData; voicePartChart.data.datasets[2].data = absentData; voicePartChart.update(); }
-        function updateTrendChart() { const dates = Object.keys(attendanceRecords).sort((a, b) => new Date(a) - new Date(b)); const rates = dates.map(date => { const data = processAttendanceData(date); let totalPresent = 0, totalMembers = 0; Object.values(data).forEach(part => { totalPresent += part.present; totalMembers += part.total; }); return totalMembers > 0 ? (totalPresent / totalMembers * 100).toFixed(1) : 0; }); trendChart.data.labels = dates.map(formatDate); trendChart.data.datasets[0].data = rates; trendChart.update(); }
-        function updateDetailTable(data) { const tableBody = document.getElementById('detailTableBody'); tableBody.innerHTML = ''; Object.entries(data).forEach(([part, stats]) => { const rate = stats.total > 0 ? (stats.present / stats.total * 100).toFixed(1) : 0; const row = `<tr class="hover:bg-pale-50 transition-colors"><td class="px-6 py-4 whitespace-nowrap">${voicePartNames[part]}</td><td class="px-6 py-4 whitespace-nowrap">${stats.total}</td><td class="px-6 py-4 whitespace-nowrap">${stats.present}</td><td class="px-6 py-4 whitespace-nowrap">${stats.leave}</td><td class="px-6 py-4 whitespace-nowrap">${stats.absent}</td><td class="px-6 py-4 whitespace-nowrap font-medium ${rate >= 90 ? 'text-denim-600' : rate >= 75 ? 'text-denim-500' : 'text-rose-500'}">${rate}%</td></tr>`; tableBody.innerHTML += row; }); }
-        function updateAttendanceList(date) { const attendees = attendanceRecords[date] || []; const attendeesByPart = { soprano: [], alto: [], tenor: [], bass: [] }; attendees.forEach(name => { const member = memberData.find(m => m.姓名 === name); if (member && member.狀態 === "在練") { const partKey = member.聲部.toLowerCase(); if (attendeesByPart[partKey]) { attendeesByPart[partKey].push(name); } } }); Object.keys(voicePartNames).forEach(part => { const listElement = document.getElementById(`${part}List`); listElement.innerHTML = ''; const members = attendeesByPart[part]; if (members.length === 0) { listElement.innerHTML = '<li class="italic text-misty-400">無出席人員</li>'; } else { members.forEach(name => listElement.innerHTML += `<li>${name}</li>`); } }); }
-        function updateLeaveList(date) { const tableBody = document.getElementById('leaveTableBody'); tableBody.innerHTML = ''; const leavers = leaveRecords[date] || []; if (leavers.length === 0) { tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center italic text-misty-400">無請假人員</td></tr>'; return; } leavers.forEach(record => { const member = memberData.find(m => m.姓名 === record.name); const partName = member ? voicePartNames[member.聲部.toLowerCase()] : '未知'; const row = `<tr class="hover:bg-pale-50 transition-colors"><td class="px-6 py-4 whitespace-nowrap">${record.name}</td><td class="px-6 py-4 whitespace-nowrap">${partName}</td><td class="px-6 py-4">${record.reason}</td><td class="px-6 py-4 whitespace-nowrap text-misty-500 text-sm">${record.time}</td></tr>`; tableBody.innerHTML += row; }); }
+
+        function updateVoicePartChart(data) {
+            const presentData = [], leaveData = [], absentData = [];
+            Object.keys(voicePartNames).forEach(part => { presentData.push(data[part].present); leaveData.push(data[part].leave); absentData.push(data[part].absent); });
+            voicePartChart.data.datasets[0].data = presentData;
+            voicePartChart.data.datasets[1].data = leaveData;
+            voicePartChart.data.datasets[2].data = absentData;
+            voicePartChart.update();
+        }
+
+        function updateTrendChart() {
+            const dates = Object.keys(attendanceRecords).sort((a, b) => new Date(a) - new Date(b));
+            const rates = dates.map(date => { const data = processAttendanceData(date); let totalPresent = 0, totalMembers = 0; Object.values(data).forEach(part => { totalPresent += part.present; totalMembers += part.total; }); return totalMembers > 0 ? (totalPresent / totalMembers * 100).toFixed(1) : 0; });
+            trendChart.data.labels = dates.map(formatDate);
+            trendChart.data.datasets[0].data = rates;
+            trendChart.update();
+        }
+
+        function updateLeaveReasonChart() {
+            const labels = Object.keys(leaveReasonStats);
+            const data = Object.values(leaveReasonStats);
+            leaveReasonChart.data.labels = labels;
+            leaveReasonChart.data.datasets[0].data = data;
+            leaveReasonChart.update();
+        }
+
+        function updateDetailTable(data) {
+            const tableBody = document.getElementById('detailTableBody');
+            tableBody.innerHTML = '';
+            Object.entries(data).forEach(([part, stats]) => {
+                const rate = stats.total > 0 ? (stats.present / stats.total * 100).toFixed(1) : 0;
+                const row = `<tr class="hover:bg-pale-50 transition-colors"><td class="px-6 py-4 whitespace-nowrap">${voicePartNames[part]}</td><td class="px-6 py-4 whitespace-nowrap">${stats.total}</td><td class="px-6 py-4 whitespace-nowrap">${stats.present}</td><td class="px-6 py-4 whitespace-nowrap">${stats.leave}</td><td class="px-6 py-4 whitespace-nowrap">${stats.absent}</td><td class="px-6 py-4 whitespace-nowrap font-medium ${rate >= 90 ? 'text-denim-600' : rate >= 75 ? 'text-denim-500' : 'text-rose-500'}">${rate}%</td></tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        function updateAttendanceList(date) {
+            const attendees = attendanceRecords[date] || [];
+            const attendeesByPart = { soprano: [], alto: [], tenor: [], bass: [] };
+            attendees.forEach(name => { const member = memberData.find(m => m.姓名 === name); if (member && member.狀態 === "在練") { const partKey = member.聲部.toLowerCase(); if (attendeesByPart[partKey]) { attendeesByPart[partKey].push(name); } } });
+            Object.keys(voicePartNames).forEach(part => {
+                const listElement = document.getElementById(`${part}List`);
+                listElement.innerHTML = '';
+                const members = attendeesByPart[part];
+                if (members.length === 0) { listElement.innerHTML = '<li class="italic text-misty-400">無出席人員</li>'; } else { members.forEach(name => listElement.innerHTML += `<li>${name}</li>`); }
+            });
+        }
+
+        function updateLeaveList(date) {
+            const tableBody = document.getElementById('leaveTableBody');
+            tableBody.innerHTML = '';
+            const leavers = leaveRecords[date] || [];
+            if (leavers.length === 0) { tableBody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center italic text-misty-400">無請假人員</td></tr>'; return; }
+            leavers.forEach(record => {
+                const member = memberData.find(m => m.姓名 === record.name);
+                const partName = member ? voicePartNames[member.聲部.toLowerCase()] : '未知';
+                const row = `<tr class="hover:bg-pale-50 transition-colors"><td class="px-6 py-4 whitespace-nowrap">${record.name}</td><td class="px-6 py-4 whitespace-nowrap">${partName}</td><td class="px-6 py-4">${record.reason}</td><td class="px-6 py-4 whitespace-nowrap text-misty-500 text-sm">${record.time}</td></tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+
         function showLoading() { document.getElementById('loading').classList.remove('hidden'); }
         function hideLoading() { document.getElementById('loading').classList.add('hidden'); }
         function formatDate(dateString) { const date = new Date(dateString); return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`; }
